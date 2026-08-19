@@ -219,3 +219,6 @@ __marimo__/
 
 # Airflow
 logs
+
+# dbt
+.venv-dbt
