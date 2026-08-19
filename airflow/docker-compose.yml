@@ -1,0 +1,9 @@
+# Airflow Services
+services:
+  airflow:
+    build: .
+    command: standalone
+    ports:
+      - "8080:8080"
+    volumes:
+      - ~/.aws:/home/airflow/.aws:ro
