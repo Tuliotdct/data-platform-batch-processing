@@ -36,7 +36,7 @@ def dag_bronze():
         context = get_current_context()
         context["table_name"] = table_name
 
-        partition_date = logical_date.in_timezone('Europe/Amsterdam').format('DD-MM-YYYY')
+        partition_date = logical_date.in_timezone('Europe/Amsterdam').format('YYYY-MM-DD')
         return extract_tables_dellstore(table=table_name, partition_date=partition_date)
 
     bronze_tables = load_tables_dellstore.expand(table_name=list_tables)
