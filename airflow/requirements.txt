@@ -4,3 +4,5 @@ boto3==1.42.84
 botocore==1.42.84
 pyarrow==23.0.1
 SQLAlchemy==2.0.49
+python-dotenv==1.2.2
+psycopg2-binary==2.9.11
