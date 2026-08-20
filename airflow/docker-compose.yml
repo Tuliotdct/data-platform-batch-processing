@@ -5,5 +5,10 @@ services:
     command: standalone
     ports:
       - "8080:8080"
+    env_file:
+      - .env
     volumes:
       - ~/.aws:/home/airflow/.aws:ro
+      - ./dags:/opt/airflow/dags
+      - ./config:/opt/airflow/config
+      - ./plugins:/opt/airflow/plugins
