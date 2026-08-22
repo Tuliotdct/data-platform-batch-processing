@@ -9,11 +9,11 @@ from src.db_connections import get_connection
 
 @dag(
         
-    dag_id = 'dag_bronze',
+    dag_id = 'dag_raw_dellstore',
     schedule = '@hourly',
     start_date = pendulum.datetime(2026,8,20, tz='Europe/Amsterdam'),
     catchup = False,
-    tags = ['Bronze DAG DellStore'],
+    tags = ['Raw DAG DellStore'],
 
     default_args={
         "depends_on_past": False,
@@ -23,7 +23,7 @@ from src.db_connections import get_connection
 
 )
 
-def dag_bronze():
+def dag_extraction_dellstore():
 
     start = EmptyOperator(task_id = 'start')
     end = EmptyOperator(task_id = 'end')
@@ -31,7 +31,7 @@ def dag_bronze():
     conn = get_connection()
     list_tables = inspect(conn).get_table_names()
 
-    @task(task_id = 'bronze', map_index_template="{{ table_name }}")
+    @task(task_id = 'raw_dellstore', map_index_template="{{ table_name }}")
     def load_tables_dellstore(table_name, logical_date=None):
         context = get_current_context()
         context["table_name"] = table_name
@@ -39,8 +39,8 @@ def dag_bronze():
         partition_date = logical_date.in_timezone('Europe/Amsterdam').format('YYYY-MM-DD')
         return extract_tables_dellstore(table=table_name, partition_date=partition_date)
 
-    bronze_tables = load_tables_dellstore.expand(table_name=list_tables)
+    raw_tables = load_tables_dellstore.expand(table_name=list_tables)
 
-    start >> bronze_tables >> end
+    start >> raw_tables >> end
 
-dag_bronze()
+dag_extraction_dellstore()
