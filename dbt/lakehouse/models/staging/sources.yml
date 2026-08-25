@@ -1,0 +1,15 @@
+version: 2
+
+sources: 
+  - name: raw
+    database: awsdatacatalog
+    schema: raw-dellstore
+    tables:
+      - name: categories
+      - name: cust_hist
+      - name: customers
+      - name: inventory
+      - name: orderlines
+      - name: orders
+      - name: products
+      - name: reorder
