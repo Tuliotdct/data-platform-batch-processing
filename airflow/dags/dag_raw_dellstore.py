@@ -1,11 +1,9 @@
 from airflow.sdk import dag, task
-from airflow.sdk import get_current_context
 from airflow.providers.standard.operators.empty import EmptyOperator
 from datetime import timedelta
 import pendulum
-from sqlalchemy import inspect
 from src.extract import extract_tables_dellstore
-from src.db_connections import get_connection
+from src.tables import list_tables_dellstore
 
 @dag(
         
@@ -28,19 +26,18 @@ def dag_extraction_dellstore():
     start = EmptyOperator(task_id = 'start')
     end = EmptyOperator(task_id = 'end')
 
-    conn = get_connection()
-    list_tables = inspect(conn).get_table_names()
+    list_tables = list_tables_dellstore()
+    
+    for table in list_tables:
 
-    @task(task_id = 'raw_dellstore', map_index_template="{{ table_name }}")
-    def load_tables_dellstore(table_name, logical_date=None):
-        context = get_current_context()
-        context["table_name"] = table_name
+        @task(task_id = f'{table}')
+        def load_tables_dellstore(table_name, logical_date=None):
+            
+            partition_date = logical_date.in_timezone('Europe/Amsterdam').format('YYYY-MM-DD')
+            return extract_tables_dellstore(table=table_name, partition_date=partition_date)
+        
+        raw_tables_dellstore = load_tables_dellstore(table_name=table)
 
-        partition_date = logical_date.in_timezone('Europe/Amsterdam').format('YYYY-MM-DD')
-        return extract_tables_dellstore(table=table_name, partition_date=partition_date)
-
-    raw_tables = load_tables_dellstore.expand(table_name=list_tables)
-
-    start >> raw_tables >> end
+        start >> raw_tables_dellstore >> end
 
 dag_extraction_dellstore()

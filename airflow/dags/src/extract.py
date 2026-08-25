@@ -1,5 +1,4 @@
 import pandas as pd
-from sqlalchemy import inspect
 from src.db_connections import get_connection
 
 

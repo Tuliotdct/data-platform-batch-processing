@@ -1,5 +1,5 @@
 from sqlalchemy import create_engine, URL
-from .aws_secrets import get_secret
+from src.aws_secrets import get_secret
 
 
 def get_connection():
