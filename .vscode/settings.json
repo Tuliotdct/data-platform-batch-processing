@@ -1,0 +1,6 @@
+{
+  // dbt lives in a nested venv, so VSCode's auto-discovery (which looks for
+  // .venv at the workspace root) misses it. dbt Power User asks the Python
+  // extension which interpreter is active, so pointing Python here is enough.
+  "python.defaultInterpreterPath": "${workspaceFolder}/dbt/.venv-dbt/bin/python"
+}
