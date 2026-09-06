@@ -1,6 +1,7 @@
-{{ config(materialized = 'incremental', incremental_strategy = 'insert_overwrite') }}
-
 with source as (
+    select * from {{source('raw','customers')}}
+),
+rename as (
     select
     region,
     address1,
@@ -23,7 +24,6 @@ with source as (
     age,
     phone,
     partition_date
-    from {{source('raw','customers')}}
-    where partition_date = (select max(partition_date) from {{ source('raw', 'customers') }})
+    from source
 )
-select * from source
+select * from rename

@@ -1,6 +1,7 @@
-{{ config(materialized = 'incremental', incremental_strategy = 'insert_overwrite') }}
-
 with source as (
+    select * from {{source('raw','reorder')}}
+),
+rename as (
     select
     prod_id,
     date_reordered,
@@ -9,7 +10,6 @@ with source as (
     date_expected,
     quan_low,
     partition_date
-    from {{source('raw','reorder')}}
-    where partition_date = (select max(partition_date) from {{ source('raw', 'reorder') }})
+    from source
 )
-select * from source
+select * from rename

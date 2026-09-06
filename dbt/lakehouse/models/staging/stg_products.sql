@@ -1,6 +1,7 @@
-{{ config(materialized = 'incremental', incremental_strategy = 'insert_overwrite') }}
-
 with source as (
+    select * from {{source('raw','products')}}
+),
+rename as (
     select
     title,
     actor,
@@ -10,7 +11,6 @@ with source as (
     price,
     common_prod_id,
     partition_date
-    from {{source('raw','products')}}
-    where partition_date = (select max(partition_date) from {{ source('raw', 'products') }})
+    from source
 )
-select * from source
+select * from rename

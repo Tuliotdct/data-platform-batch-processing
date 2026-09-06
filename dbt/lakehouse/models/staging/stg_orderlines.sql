@@ -1,6 +1,7 @@
-{{ config(materialized = 'incremental', incremental_strategy = 'insert_overwrite') }}
-
 with source as (
+    select * from {{source('raw','orderlines')}}
+),
+rename as (
     select
     prod_id,
     quantity,
@@ -8,7 +9,6 @@ with source as (
     orderid as order_id,
     orderdate order_date,
     partition_date
-    from {{source('raw','orderlines')}}
-    where partition_date = (select max(partition_date) from {{ source('raw', 'orderlines') }})
+    from source
 )
-select * from source
+select * from rename

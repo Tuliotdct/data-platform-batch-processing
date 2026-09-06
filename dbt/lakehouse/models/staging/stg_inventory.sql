@@ -1,12 +1,12 @@
-{{ config(materialized = 'incremental', incremental_strategy = 'insert_overwrite') }}
-
 with source as (
+    select * from {{source('raw','inventory')}}
+),
+rename as (
     select
     prod_id,
-    sales,
     quan_in_stock,
+    sales,
     partition_date
-    from {{source('raw','inventory')}}
-    where partition_date = (select max(partition_date) from {{ source('raw', 'inventory') }})
+    from source
 )
-select * from source
+select * from rename

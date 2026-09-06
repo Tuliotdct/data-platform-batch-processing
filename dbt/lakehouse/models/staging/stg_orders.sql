@@ -1,6 +1,7 @@
-{{ config(materialized = 'incremental', incremental_strategy = 'insert_overwrite') }}
-
 with source as (
+    select * from {{source('raw','orders')}}
+),
+rename as (
     select
     totalamount as total_amout,
     tax,
@@ -9,7 +10,6 @@ with source as (
     orderdate as order_date,
     orderid as order_id,
     partition_date
-    from {{source('raw','orders')}}
-    where partition_date = (select max(partition_date) from {{ source('raw', 'orders') }})
+    from source
 )
-select * from source
+select * from rename
