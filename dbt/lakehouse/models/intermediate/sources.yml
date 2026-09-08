@@ -1,0 +1,15 @@
+version: 2
+
+sources: 
+  - name: staging
+    database: awsdatacatalog
+    schema: staging
+    tables:
+      - name: stg_categories
+      - name: stg_cust_hist
+      - name: stg_customers
+      - name: stg_inventory
+      - name: stg_orderlines
+      - name: stg_orders
+      - name: stg_products
+      - name: stg_reoder
